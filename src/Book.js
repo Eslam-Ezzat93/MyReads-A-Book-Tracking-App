@@ -1,8 +1,15 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 function Book(props) {
 	const { book, onChangeShelf } = props;
+
+	const thumbnail =
+		book.imageLinks === undefined
+			? 'https://dummyimage.com/128x193/333/ffffff&text=missing+image'
+			: book.imageLinks.thumbnail;
+
+	const authors = book.authors === undefined ? 'Unknown Author' : book.authors.join(', ');
 
 	return (
 		<li>
@@ -10,11 +17,7 @@ function Book(props) {
 				<div className="book-top">
 					<div
 						className="book-cover"
-						style={{
-							width: 128,
-							height: 193,
-							backgroundImage: `url(${book.imageLinks.thumbnail})`
-						}}
+						style={{ width: 128, height: 193, backgroundImage: `url(${thumbnail})` }}
 					/>
 					<div className="book-shelf-changer">
 						<select
@@ -34,15 +37,15 @@ function Book(props) {
 					</div>
 				</div>
 				<div className="book-title">{book.title}</div>
-				<div className="book-authors">{book.authors.join(', ')}</div>
+				<div className="book-authors">{authors}</div>
 			</div>
 		</li>
 	);
 }
 
 Book.propTypes = {
-	book: propTypes.object.isRequired,
-	onChangeShelf: propTypes.func.isRequired
+	book: PropTypes.object.isRequired,
+	onChangeShelf: PropTypes.func.isRequired
 };
 
 export default Book;
