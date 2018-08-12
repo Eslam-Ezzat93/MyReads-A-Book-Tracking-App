@@ -20,10 +20,15 @@ class BooksApp extends Component {
 	}
 
 	updateShelf = (book, event) => {
-		BooksAPI.update(book, event.target.value).then(res => {
-			BooksAPI.getAll().then(res => {
-				this.setState({
-					books: res
+		return new Promise(resolve => {
+			BooksAPI.update(book, event.target.value).then(res => {
+				BooksAPI.getAll().then(res => {
+					this.setState(
+						{
+							books: res
+						},
+						resolve(res)
+					);
 				});
 			});
 		});
@@ -31,10 +36,13 @@ class BooksApp extends Component {
 
 	render() {
 		const { books } = this.state;
-		
+
 		return (
 			<div className="app">
-				<Route path="/search" render={() => <BookSearch shelvedBooks={books} onChangeShelf={this.updateShelf}/>} />
+				<Route
+					path="/search"
+					render={() => <BookSearch shelvedBooks={books} onChangeShelf={this.updateShelf} />}
+				/>
 				<Route
 					exact
 					path="/"

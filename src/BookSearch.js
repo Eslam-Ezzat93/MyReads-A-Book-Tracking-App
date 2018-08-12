@@ -22,7 +22,7 @@ class BookSearch extends Component {
 				if (res.error) {
 					this.setState({ sBooks: [] });
 				} else if (res) {
-					this.updateBooks(res);
+					this.prepBooks(res);
 				}
 			});
 		} else {
@@ -30,15 +30,31 @@ class BookSearch extends Component {
 		}
 	};
 
-	updateBooks = books => {
-		for (const book of books) {
+	prepBooks = books => {
+		const bks = books;
+		for (const book of bks) {
 			book.shelf = 'none';
 			for (const shelvedBook of this.props.shelvedBooks) {
 				if (book.id === shelvedBook.id) book.shelf = shelvedBook.shelf;
 			}
 		}
 
-		this.setState({ sBooks: books });
+		this.setState({ sBooks: bks });
+	};
+
+	updateBooks = books => {
+		const sBks = this.state.sBooks;
+		for (const book of sBks) {
+			for (const shelvedBook of books) {
+				if (book.id === shelvedBook.id) book.shelf = shelvedBook.shelf;
+			}
+		}
+
+		this.setState({ sBooks: sBks });
+	};
+
+	onChangeShelf = (book, event) => {
+		this.props.onChangeShelf(book, event).then(books => this.updateBooks(books));
 	};
 
 	render() {
@@ -55,17 +71,14 @@ class BookSearch extends Component {
 							type="text"
 							value={this.state.query}
 							placeholder="Search by title or author"
-							onChange={event => {
-								this.updateQuery(event);
-								// this.searchBooks(event) //setState doesn't update state on time
-							}}
+							onChange={event => this.updateQuery(event)}
 						/>
 					</div>
 				</div>
 				<div className="search-books-results">
 					<ol className="books-grid">
 						{sBooks.map(book => (
-							<Book key={book.id} book={book} onChangeShelf={this.props.onChangeShelf} />
+							<Book key={book.id} book={book} onChangeShelf={this.onChangeShelf} />
 						))}
 					</ol>
 				</div>
