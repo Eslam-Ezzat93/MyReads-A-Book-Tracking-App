@@ -7,11 +7,15 @@ function BookShelf(props) {
 		<div className="bookshelf">
 			<h2 className="bookshelf-title">{props.shelfName}</h2>
 			<div className="bookshelf-books">
-				<ol className="books-grid">
-					{props.books.map(book => (
-						<Book key={book.id} book={book} onChangeShelf={props.onChangeShelf} />
-					))}
-				</ol>
+				{props.books.length > 0 ? (
+					<ol className="books-grid">
+						{props.books.map(book => (
+							<Book key={book.id} book={book} onChangeShelf={props.onChangeShelf} />
+						))}
+					</ol>
+				) : (
+					<div className="loader" />
+				)}
 			</div>
 		</div>
 	);
